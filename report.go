@@ -118,17 +118,10 @@ func writeTextReport(w io.Writer, data ReportData) {
 
 	// Closing summary: the top three folders and their combined
 	// share. The scan root itself is excluded, because it is
-	// always 100% and says nothing.
-	var top []DirTotal
-	for _, d := range s.LargestDirs {
-		if d.Path == s.Root {
-			continue
-		}
-		top = append(top, d)
-		if len(top) == 3 {
-			break
-		}
-	}
+	// always 100% and says nothing. A folder inside (or around) one
+	// already picked is skipped too: its bytes are already counted,
+	// and adding them again could push the share past 100%.
+	top := summaryFolders(s.Root, s.LargestDirs, 3)
 	if len(top) == 0 {
 		fmt.Fprintln(w, "Summary: no folders under the scanned folder hold any counted files.")
 		return
@@ -141,6 +134,39 @@ func writeTextReport(w io.Writer, data ReportData) {
 	}
 	fmt.Fprintf(w, "Summary: the biggest folders are %s. Together they hold %s, which is %.1f%% of the scanned total.\n",
 		strings.Join(names, ", "), formatBytes(combined), sharePercent(combined, s.Bytes))
+}
+
+// summaryFolders picks up to n of the largest folders, leaving out
+// the scan root and any folder nested inside, or holding, one that
+// was already picked, so the picked folders never overlap.
+func summaryFolders(root string, dirs []DirTotal, n int) []DirTotal {
+	var top []DirTotal
+	for _, d := range dirs {
+		if d.Path == root {
+			continue
+		}
+		overlaps := false
+		for _, t := range top {
+			if isWithin(d.Path, t.Path) || isWithin(t.Path, d.Path) {
+				overlaps = true
+				break
+			}
+		}
+		if overlaps {
+			continue
+		}
+		top = append(top, d)
+		if len(top) == n {
+			break
+		}
+	}
+	return top
+}
+
+// isWithin reports whether path is dir itself or lies inside it.
+func isWithin(path, dir string) bool {
+	rel, err := filepath.Rel(dir, path)
+	return err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator))
 }
 
 // displayPath shows a path relative to the scan root when it is

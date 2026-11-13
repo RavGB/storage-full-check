@@ -78,55 +78,82 @@ used, 2 = a flag or argument was wrong.
 
 ## Example output
 
+This is a real run on 13 Nov 2026 inside a clean Linux container
+(Docker, `golang:1.25-alpine`), scanning the Go installation that
+comes with the image, copied as printed. `--top 5` keeps the lists
+short here; the default is 20.
+
 ```text
+$ ./storage-full-check --path /usr/local/go --top 5
 Storage full check
 RavGB - hello@ravgb.com - https://ravgb.com
-Scanned: /home/hatch/workspace/ravgb-coding
+Generated: 2026-11-13 19:27:13
+Scanned: /usr/local/go
 ----------------------------------------------------------------
 Filesystem (from the operating system):
-  Total: 249.98 GiB (268417609728 bytes)
-  Used:  7.86 GiB (8443174912 bytes) (3.1%)
-  Free:  242.12 GiB (259974434816 bytes)
+  Total: 58.42 GiB (62725623808 bytes)
+  Used:  11.75 GiB (12612657152 bytes) (20.1%)
+  Free:  46.67 GiB (50112966656 bytes)
 
 Scan totals (files counted under the scanned folder):
-  Files:       63
-  Directories: 30
-  Total size:  13.73 MiB (14394740 bytes)
+  Files:       14541
+  Directories: 1592
+  Total size:  196.85 MiB (206410843 bytes)
   Read errors: 0
+  Stored directly in the scanned folder itself: 6.41 KiB (6566 bytes) in 8 file(s) (0.0% of the scanned total)
 
-Largest files (top 20):
-  9.63 MiB (10092901 bytes) /home/hatch/workspace/ravgb-coding/network-slow-check/network-slow-check
-  3.98 MiB (4175858 bytes) /home/hatch/workspace/ravgb-coding/storage-full-check/storage-full-check
-  11.99 KiB (12282 bytes) /home/hatch/workspace/ravgb-coding/storage-full-check/scan.go
-  ...
+Largest files (top 5):
+  20.65 MiB (21654239 bytes) /usr/local/go/pkg/tool/linux_amd64/compile
+  14.29 MiB (14989108 bytes) /usr/local/go/bin/go
+  7.80 MiB (8182560 bytes) /usr/local/go/pkg/tool/linux_amd64/vet
+  6.17 MiB (6473062 bytes) /usr/local/go/pkg/tool/linux_amd64/link
+  4.93 MiB (5172006 bytes) /usr/local/go/pkg/tool/linux_amd64/cover
 
-Largest folders (top 20, subtree totals):
-  13.73 MiB (14394740 bytes)  100.0%  /home/hatch/workspace/ravgb-coding
-  9.66 MiB (10133329 bytes)   70.4%  /home/hatch/workspace/ravgb-coding/network-slow-check
-  4.02 MiB (4216479 bytes)   29.3%  /home/hatch/workspace/ravgb-coding/storage-full-check
-  ...
+Largest folders (top 5, subtree totals):
+  196.85 MiB (206410843 bytes)  100.0%  /usr/local/go
+  111.87 MiB (117301494 bytes)   56.8%  /usr/local/go/src
+  50.56 MiB (53013679 bytes)   25.7%  /usr/local/go/pkg
+  50.55 MiB (53006446 bytes)   25.7%  /usr/local/go/pkg/tool
+  50.55 MiB (53006446 bytes)   25.7%  /usr/local/go/pkg/tool/linux_amd64
 
 Folders directly under the scanned folder:
-  9.66 MiB (10133329 bytes)   70.4%  network-slow-check
-  4.02 MiB (4216479 bytes)   29.3%  storage-full-check
-  43.88 KiB (44932 bytes)    0.3%  local-issues-check
+  111.87 MiB (117301494 bytes)   56.8%  src
+  50.56 MiB (53013679 bytes)   25.7%  pkg
+  17.16 MiB (17998461 bytes)    8.7%  bin
+  8.56 MiB (8970974 bytes)    4.3%  api
+  7.23 MiB (7583532 bytes)    3.7%  test
+  1.04 MiB (1091859 bytes)    0.5%  lib
+  377.53 KiB (386588 bytes)    0.2%  doc
+  56.34 KiB (57690 bytes)    0.0%  misc
 
 By extension (top 15 by size):
-  (no extension)       25 file(s)  13.62 MiB (14280263 bytes)
-  .go                  15 file(s)  67.01 KiB (68622 bytes)
-  ...
+  .go               10658 file(s)  85.76 MiB (89927064 bytes)
+  (no extension)      287 file(s)  70.41 MiB (73825165 bytes)
+  .syso                21 file(s)  11.43 MiB (11982400 bytes)
+  .txt               1351 file(s)  11.06 MiB (11592151 bytes)
+  .s                  635 file(s)  5.74 MiB (6022138 bytes)
+  .html                14 file(s)  2.85 MiB (2990129 bytes)
+  .base64              17 file(s)  1.74 MiB (1822370 bytes)
+  .zip                 33 file(s)  1.03 MiB (1078739 bytes)
+  .rules               20 file(s)  817.79 KiB (837420 bytes)
+  .bz2                 12 file(s)  739.47 KiB (757218 bytes)
+  .json                31 file(s)  656.00 KiB (671747 bytes)
+  .png                 56 file(s)  395.48 KiB (404973 bytes)
+  .crt                407 file(s)  382.38 KiB (391553 bytes)
+  .test                40 file(s)  380.24 KiB (389370 bytes)
+  .csv                  1 file(s)  334.90 KiB (342934 bytes)
 
 Review candidates (at least 95.37 MiB (100000000 bytes) and not modified for at least 180 days):
   (none)
 
 Size histogram:
-  under 1KB          33 file(s)  9.57 KiB (9800 bytes)
-  1KB - 1MB          28 file(s)  113.46 KiB (116181 bytes)
-  1MB - 100MB         2 file(s)  13.61 MiB (14268759 bytes)
+  under 1KB        7163 file(s)  3.17 MiB (3327032 bytes)
+  1KB - 1MB        7358 file(s)  105.21 MiB (110319735 bytes)
+  1MB - 100MB        20 file(s)  88.47 MiB (92764076 bytes)
   100MB - 1GB         0 file(s)  0 B
   over 1GB            0 file(s)  0 B
 
-Summary: the biggest folders are network-slow-check (9.66 MiB (10133329 bytes), 70.4%), storage-full-check (4.02 MiB (4216479 bytes), 29.3%), local-issues-check (43.88 KiB (44932 bytes), 0.3%). Together they hold 13.73 MiB (14394740 bytes), which is 100.0% of the scanned total.
+Summary: the biggest folders are src (111.87 MiB (117301494 bytes), 56.8%), pkg (50.56 MiB (53013679 bytes), 25.7%). Together they hold 162.43 MiB (170315173 bytes), which is 82.5% of the scanned total.
 ```
 
 (Trimmed from a real run of this tool against a real folder.)
